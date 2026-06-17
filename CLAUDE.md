@@ -166,7 +166,7 @@ AudioBufferSourceNode            │
 | `eqBypassed` | `AppContext` (drives A/B toggle + EQ curve dimming) |
 | Oscillator `isPlaying`, `currentFreq` | `OscillatorControl` local state |
 | Sweep `isSweeping`, `progress`, `currentFreq` | `useSweep` |
-| File `isPlaying`, `eqEnabled`, `fileName` | `AudioFilePlayer` local state |
+| File `isPlaying`, `currentTime`, `duration`, `isScrubbing` | `AudioFilePlayer` local state |
 
 **Sync pattern:** event handler calls `engine.setBandXxx(index, value)` AND `dispatch(UPDATE_BAND)` together. The reducer is pure — no side effects inside it.
 
@@ -262,6 +262,8 @@ Local-only processing. No data leaves the browser. One-line notice in the footer
 - `frequencyMath.ts` uses shared module-level `MAG_BUF` / `PHASE_BUF` buffers. These are not thread-safe, but Web Audio runs on the main thread so this is fine.
 - Frequency label text anchors: `"start"` for 20 Hz, `"end"` for 20 kHz, `"middle"` for all others — prevents labels clipping outside the SVG.
 - `startOscillator()`/`startFile()` must restore `masterGainNode` to `this.preampLinear`, not hardcoded `1.0`, otherwise a panic followed by replay silently overrides the user's preamp setting.
+- `AudioBufferSourceNode` is one-shot and has no seek or pause. Pause is implemented by storing `playbackOffset = getFilePosition()` then stopping the source. Resume calls `startFile(offset)` which creates a fresh source. Seek follows the same pattern. `onFileEnded` callback is stored on the engine and reused across resume/seek so React can reset state when the track ends naturally.
+- The scrubber commits the seek on `onPointerUp`, not `onChange`, to avoid creating a new buffer source on every pixel of drag. During scrubbing, `isScrubbingRef` blocks the rAF loop from overwriting the visual position.
 - `bypassTrimNode` must be disconnected in `rebuildChain()` at the top of every call (alongside filter nodes), otherwise stale connections to `analyserNode` accumulate. It only reconnects in the bypass branch.
 
 ---
