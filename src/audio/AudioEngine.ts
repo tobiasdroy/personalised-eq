@@ -11,6 +11,8 @@ export class AudioEngine {
   private oscGainNode: GainNode | null = null;
   private fileGainNode: GainNode | null = null;
   private masterGainNode: GainNode | null = null;
+  private safetyLimiterNode: GainNode | null = null;
+  private compressorNode: DynamicsCompressorNode | null = null;
   private analyserNode: AnalyserNode | null = null;
   private filterNodes: BiquadFilterNode[] = [];
   private currentOscillator: OscillatorNode | null = null;
@@ -22,8 +24,6 @@ export class AudioEngine {
   init(): void {
     if (this.ctx) return;
 
-    // AudioContext can be created on mount; it starts suspended but getFrequencyResponse
-    // works regardless. We call resume() before actual audio playback.
     this.ctx = new AudioContext();
 
     this.oscGainNode = this.ctx.createGain();
@@ -32,8 +32,24 @@ export class AudioEngine {
     this.analyserNode = this.ctx.createAnalyser();
     this.analyserNode.fftSize = 2048;
 
+    // Hard output ceiling at -1 dBFS before the compressor
+    this.safetyLimiterNode = this.ctx.createGain();
+    this.safetyLimiterNode.gain.value = 0.89;
+
+    // Brick-wall compressor/limiter — inaudible during normal use,
+    // engages only when the signal approaches 0 dBFS
+    this.compressorNode = this.ctx.createDynamicsCompressor();
+    this.compressorNode.threshold.value = -1;
+    this.compressorNode.knee.value = 0;
+    this.compressorNode.ratio.value = 20;
+    this.compressorNode.attack.value = 0.001;
+    this.compressorNode.release.value = 0.1;
+
+    // Chain: EQ → analyser → masterGain → safetyLimiter → compressor → destination
     this.analyserNode.connect(this.masterGainNode);
-    this.masterGainNode.connect(this.ctx.destination);
+    this.masterGainNode.connect(this.safetyLimiterNode);
+    this.safetyLimiterNode.connect(this.compressorNode);
+    this.compressorNode.connect(this.ctx.destination);
 
     for (let i = 0; i < 5; i++) {
       const node = this.ctx.createBiquadFilter();
@@ -53,6 +69,14 @@ export class AudioEngine {
     }
   }
 
+  // Immediately silences all audio and stops all sources.
+  panic(): void {
+    if (!this.ctx || !this.masterGainNode) return;
+    this.masterGainNode.gain.setValueAtTime(0, this.ctx.currentTime);
+    this.stopOscillator();
+    this.stopFile();
+  }
+
   private defaultFrequencyForBand(index: number): number {
     const defaults = [100, 400, 1000, 4000, 12000];
     return defaults[index] ?? 1000;
@@ -66,14 +90,12 @@ export class AudioEngine {
   rebuildChain(): void {
     if (!this.ctx || !this.oscGainNode || !this.fileGainNode || !this.analyserNode) return;
 
-    // Disconnect all chain nodes
     this.oscGainNode.disconnect();
     this.fileGainNode.disconnect();
     for (const node of this.filterNodes) {
       node.disconnect();
     }
 
-    // Reconnect filter chain
     for (let i = 0; i < this.filterNodes.length - 1; i++) {
       this.filterNodes[i].connect(this.filterNodes[i + 1]);
     }
@@ -81,7 +103,6 @@ export class AudioEngine {
       this.filterNodes[this.filterNodes.length - 1].connect(this.analyserNode);
     }
 
-    // Connect sources to chain entry
     const entry = this.getChainEntry()!;
     this.oscGainNode.connect(entry);
 
@@ -97,6 +118,8 @@ export class AudioEngine {
   async startOscillator(freq: number): Promise<void> {
     if (!this.ctx || !this.oscGainNode) return;
     await this.resumeContext();
+    // Restore master gain in case panic() was previously called
+    this.masterGainNode?.gain.setValueAtTime(1, this.ctx.currentTime);
     this.stopOscillator();
 
     const osc = this.ctx.createOscillator();
@@ -146,11 +169,6 @@ export class AudioEngine {
     this.currentOscillator.frequency.setValueAtTime(currentFreq, now);
   }
 
-  getSweepProgress(startTime: number, duration: number): number {
-    if (!this.ctx) return 0;
-    return Math.min((this.ctx.currentTime - startTime) / duration, 1);
-  }
-
   getCurrentTime(): number {
     return this.ctx?.currentTime ?? 0;
   }
@@ -165,6 +183,7 @@ export class AudioEngine {
   async startFile(): Promise<void> {
     if (!this.ctx || !this.fileGainNode || !this.audioBuffer) return;
     await this.resumeContext();
+    this.masterGainNode?.gain.setValueAtTime(1, this.ctx.currentTime);
     this.stopFile();
 
     const source = this.ctx.createBufferSource();
@@ -243,7 +262,6 @@ export class AudioEngine {
   setBandEnabled(index: number, enabled: boolean, restoreGain = 0): void {
     const node = this.filterNodes[index];
     if (!this.ctx || !node) return;
-    // Bypass by zeroing gain; restore previous gain value when re-enabling
     node.gain.setValueAtTime(enabled ? restoreGain : 0, this.ctx.currentTime);
   }
 

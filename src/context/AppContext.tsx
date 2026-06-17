@@ -9,6 +9,7 @@ interface AppContextValue {
   engineRef: RefObject<AudioEngine | null>;
   isEngineReady: boolean;
   initEngine: () => Promise<void>;
+  panic: () => void;
   bands: EQBand[];
   preampGain: number;
   addBand: () => void;
@@ -20,8 +21,8 @@ interface AppContextValue {
 
 const AppContext = createContext<AppContextValue | null>(null);
 
-export function AppProvider({ children }: { children: ReactNode }) {
-  const { engineRef, isReady, initEngine } = useAudioEngine();
+export function AppProvider({ children, safetyAccepted }: { children: ReactNode; safetyAccepted: boolean }) {
+  const { engineRef, isReady, initEngine, panic } = useAudioEngine(safetyAccepted);
   const { bands, preampGain, addBand, removeBand, updateBand, loadProfile, setPreampGain } =
     useEQBands(engineRef);
 
@@ -31,6 +32,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         engineRef,
         isEngineReady: isReady,
         initEngine,
+        panic,
         bands,
         preampGain,
         addBand,

@@ -1,21 +1,21 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { AudioEngine } from '../audio/AudioEngine';
 
-export function useAudioEngine() {
+// `enabled` is false until the user accepts the safety disclaimer.
+// No AudioContext is created until then, satisfying the gatekeeper requirement.
+export function useAudioEngine(enabled: boolean) {
   const engineRef = useRef<AudioEngine | null>(null);
   const [isReady, setIsReady] = useState(false);
 
-  // Init nodes eagerly so the EQ curve is visible before first user gesture.
-  // getFrequencyResponse works on a suspended AudioContext.
   useEffect(() => {
+    if (!enabled) return;
     if (!engineRef.current) {
       engineRef.current = new AudioEngine();
       engineRef.current.init();
       setIsReady(true);
     }
-  }, []);
+  }, [enabled]);
 
-  // Called before first audio playback to resume the AudioContext.
   async function initEngine(): Promise<void> {
     if (!engineRef.current) {
       engineRef.current = new AudioEngine();
@@ -25,5 +25,9 @@ export function useAudioEngine() {
     await engineRef.current.resumeContext();
   }
 
-  return { engineRef, isReady, initEngine };
+  const panic = useCallback(() => {
+    engineRef.current?.panic();
+  }, []);
+
+  return { engineRef, isReady, initEngine, panic };
 }

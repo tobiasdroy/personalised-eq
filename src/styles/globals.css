@@ -5,10 +5,12 @@
   --bg-elevated: #ffffff;
   --border: rgba(0, 0, 0, 0.08);
   --text-primary: rgba(0, 0, 0, 0.88);
-  --text-secondary: rgba(0, 0, 0, 0.45);
-  --accent: #007aff;
-  --eq-curve: #007aff;
-  --eq-band-fill: rgba(0, 122, 255, 0.1);
+  /* Darkened from 0.45 → 0.58 to achieve ≥4.5:1 contrast on white (WCAG AA) */
+  --text-secondary: rgba(0, 0, 0, 0.58);
+  /* Darkened from #007aff → #0062cc for ≥4.5:1 contrast on white (WCAG AA) */
+  --accent: #0062cc;
+  --eq-curve: #0062cc;
+  --eq-band-fill: rgba(0, 98, 204, 0.1);
   --eq-grid: rgba(0, 0, 0, 0.06);
   --eq-zero-line: rgba(0, 0, 0, 0.18);
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -23,10 +25,12 @@
   --bg-elevated: #3a3a3c;
   --border: rgba(255, 255, 255, 0.1);
   --text-primary: rgba(255, 255, 255, 0.92);
-  --text-secondary: rgba(255, 255, 255, 0.45);
-  --accent: #0a84ff;
-  --eq-curve: #0a84ff;
-  --eq-band-fill: rgba(10, 132, 255, 0.15);
+  /* Raised from 0.45 → 0.55 to achieve ≥4.5:1 contrast on #2c2c2e (WCAG AA) */
+  --text-secondary: rgba(255, 255, 255, 0.55);
+  /* Lightened to #5aabff for ≥4.5:1 contrast on all dark surfaces (WCAG AA) */
+  --accent: #5aabff;
+  --eq-curve: #5aabff;
+  --eq-band-fill: rgba(90, 171, 255, 0.15);
   --eq-grid: rgba(255, 255, 255, 0.06);
   --eq-zero-line: rgba(255, 255, 255, 0.18);
   --shadow: none;
@@ -64,6 +68,19 @@ input {
   font-family: var(--font);
 }
 
+/* ── Focus styles (WCAG 2.4.11 — visible focus indicator) ─────────────── */
+/* Remove default outline and replace with a consistent, high-contrast ring */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }

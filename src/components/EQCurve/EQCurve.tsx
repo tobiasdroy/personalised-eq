@@ -18,10 +18,6 @@ const SVG_HEIGHT = 280;
 
 interface DragState {
   id: string;
-  startX: number;
-  startY: number;
-  startFreq: number;
-  startGain: number;
 }
 
 export function EQCurve() {
@@ -32,7 +28,6 @@ export function EQCurve() {
   const [bandPaths, setBandPaths] = useState<string[]>([]);
   const dragRef = useRef<DragState | null>(null);
 
-  // Observe SVG width
   useEffect(() => {
     const el = svgRef.current;
     if (!el) return;
@@ -44,7 +39,6 @@ export function EQCurve() {
     return () => ro.disconnect();
   }, []);
 
-  // Recompute paths whenever bands or width changes
   useEffect(() => {
     const filterNodes = engineRef.current?.getFilterNodes() ?? [];
     if (filterNodes.length === 0) {
@@ -56,30 +50,19 @@ export function EQCurve() {
     setBandPaths(filterNodes.map((n) => buildBandPath(n, width, SVG_HEIGHT)));
   }, [bands, width, engineRef]);
 
-  // Draggable handles
-  const onPointerDown = useCallback(
-    (e: React.PointerEvent<SVGCircleElement>, band: EQBand) => {
-      e.currentTarget.setPointerCapture(e.pointerId);
-      dragRef.current = {
-        id: band.id,
-        startX: e.clientX,
-        startY: e.clientY,
-        startFreq: band.frequency,
-        startGain: band.gain,
-      };
-    },
-    [],
-  );
+  // Pointer drag
+  const onPointerDown = useCallback((e: React.PointerEvent<SVGCircleElement>, band: EQBand) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    dragRef.current = { id: band.id };
+  }, []);
 
   const onPointerMove = useCallback(
     (e: React.PointerEvent<SVGSVGElement>) => {
       const drag = dragRef.current;
       if (!drag || !svgRef.current) return;
       const rect = svgRef.current.getBoundingClientRect();
-      const relX = e.clientX - rect.left;
-      const relY = e.clientY - rect.top;
-      const newFreq = Math.max(20, Math.min(20000, xToFreq(relX, width)));
-      const newGain = Math.max(-24, Math.min(24, yToDb(relY, SVG_HEIGHT)));
+      const newFreq = Math.max(20, Math.min(20000, xToFreq(e.clientX - rect.left, width)));
+      const newGain = Math.max(-24, Math.min(24, yToDb(e.clientY - rect.top, SVG_HEIGHT)));
       updateBand(drag.id, { frequency: Math.round(newFreq), gain: parseFloat(newGain.toFixed(1)) });
     },
     [width, updateBand],
@@ -88,6 +71,34 @@ export function EQCurve() {
   const onPointerUp = useCallback(() => {
     dragRef.current = null;
   }, []);
+
+  // Keyboard navigation on handles: arrows adjust freq/gain; Shift = larger step
+  const onHandleKeyDown = useCallback(
+    (e: React.KeyboardEvent<SVGCircleElement>, band: EQBand) => {
+      const gainStep = e.shiftKey ? 2 : 0.5;
+      const freqMultiplier = e.shiftKey ? 1.2 : 1.05;
+
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          updateBand(band.id, { frequency: Math.max(20, Math.round(band.frequency / freqMultiplier)) });
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          updateBand(band.id, { frequency: Math.min(20000, Math.round(band.frequency * freqMultiplier)) });
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          updateBand(band.id, { gain: Math.min(24, parseFloat((band.gain + gainStep).toFixed(1))) });
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          updateBand(band.id, { gain: Math.max(-24, parseFloat((band.gain - gainStep).toFixed(1))) });
+          break;
+      }
+    },
+    [updateBand],
+  );
 
   return (
     <div className={styles.container}>
@@ -99,9 +110,11 @@ export function EQCurve() {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerLeave={onPointerUp}
+        role="img"
+        aria-label="EQ frequency response curve"
       >
         {/* Grid */}
-        <g className={styles.grid}>
+        <g className={styles.grid} aria-hidden="true">
           {GRID_FREQUENCIES.map((freq) => {
             const x = freqToX(freq, width);
             return (
@@ -134,35 +147,40 @@ export function EQCurve() {
 
         {/* Per-band curves (dimmed) */}
         {bandPaths.map((d, i) => (
-          <path key={i} d={d} className={styles.bandCurve} />
+          <path key={i} d={d} className={styles.bandCurve} aria-hidden="true" />
         ))}
 
         {/* Combined curve */}
         {combinedPath && (
           <>
-            {/* Glow layer */}
-            <path d={combinedPath} className={styles.curveGlow} />
-            {/* Main curve */}
-            <path d={combinedPath} className={styles.curve} />
+            <path d={combinedPath} className={styles.curveGlow} aria-hidden="true" />
+            <path d={combinedPath} className={styles.curve} aria-hidden="true" />
           </>
         )}
 
-        {/* Draggable handles */}
-        {bands.map((band) => {
+        {/* Draggable + keyboard-navigable handles */}
+        {bands.map((band, index) => {
           const x = freqToX(band.frequency, width);
           const y = dBToY(band.gain, SVG_HEIGHT);
+          const label = `Band ${index + 1}: ${formatFrequency(band.frequency)} Hz, ${band.gain > 0 ? '+' : ''}${band.gain} dB. Arrow keys adjust frequency and gain. Hold Shift for larger steps.`;
           return (
             <g key={band.id}>
-              {/* Hit area */}
               <circle
                 cx={x}
                 cy={y}
                 r={16}
                 className={styles.handleHit}
                 onPointerDown={(e) => onPointerDown(e, band)}
+                onKeyDown={(e) => onHandleKeyDown(e, band)}
+                tabIndex={0}
+                role="slider"
+                aria-label={label}
+                aria-valuenow={band.gain}
+                aria-valuemin={-24}
+                aria-valuemax={24}
+                aria-valuetext={`${band.gain > 0 ? '+' : ''}${band.gain} dB at ${formatFrequency(band.frequency)} Hz`}
               />
-              {/* Visual dot */}
-              <circle cx={x} cy={y} r={5} className={styles.handle} />
+              <circle cx={x} cy={y} r={5} className={styles.handle} aria-hidden="true" />
             </g>
           );
         })}

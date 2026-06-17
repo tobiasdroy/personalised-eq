@@ -45,10 +45,18 @@ export function ProfileManager() {
         className={styles.fileInput}
         onChange={handleImport}
       />
-      <button className={styles.btn} onClick={() => fileInputRef.current?.click()}>
+      <button
+        className={styles.btn}
+        onClick={() => fileInputRef.current?.click()}
+        aria-label="Import EQ profile from APO .txt file"
+      >
         Import Profile
       </button>
-      <button className={styles.btn} onClick={handleExport}>
+      <button
+        className={styles.btn}
+        onClick={handleExport}
+        aria-label="Export EQ profile as APO .txt file"
+      >
         Export Profile
       </button>
     </div>

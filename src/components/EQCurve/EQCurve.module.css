@@ -75,6 +75,12 @@
   cursor: grabbing;
 }
 
+.handleHit:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
 .handle {
   fill: var(--eq-curve);
   stroke: var(--bg-primary);

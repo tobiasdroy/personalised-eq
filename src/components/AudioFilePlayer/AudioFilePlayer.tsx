@@ -60,13 +60,15 @@ export function AudioFilePlayer() {
   }, [eqEnabled, engineRef]);
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container} aria-label="Audio file player">
       <div className={styles.header}>
         <span className={styles.title}>Audio File</span>
         {fileName && (
           <button
             className={`${styles.eqToggle} ${eqEnabled ? styles.eqOn : styles.eqOff}`}
             onClick={handleEQToggle}
+            aria-label={`EQ profile ${eqEnabled ? 'active — click to bypass' : 'bypassed — click to enable'}`}
+            aria-pressed={eqEnabled}
           >
             EQ {eqEnabled ? 'On' : 'Bypassed'}
           </button>
@@ -76,9 +78,13 @@ export function AudioFilePlayer() {
       <div
         className={`${styles.dropZone} ${isDragging ? styles.dragging : ''} ${fileName ? styles.hasFile : ''}`}
         onClick={() => fileInputRef.current?.click()}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInputRef.current?.click(); } }}
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
+        role="button"
+        tabIndex={0}
+        aria-label={fileName ? `Loaded: ${fileName}. Click to load a different file` : 'Upload audio file — click or drag and drop'}
       >
         <input
           ref={fileInputRef}
@@ -86,6 +92,8 @@ export function AudioFilePlayer() {
           accept="audio/*"
           className={styles.fileInput}
           onChange={handleFileInput}
+          aria-hidden="true"
+          tabIndex={-1}
         />
         {fileName ? (
           <span className={styles.fileName}>{fileName}</span>
@@ -99,14 +107,16 @@ export function AudioFilePlayer() {
           <button
             className={`${styles.playBtn} ${isPlaying ? styles.active : ''}`}
             onClick={handlePlayStop}
+            aria-label={isPlaying ? 'Stop audio file' : 'Play audio file'}
+            aria-pressed={isPlaying}
           >
             {isPlaying ? 'Stop' : 'Play'}
           </button>
-          <p className={styles.eqHint}>
-            Toggle EQ on/off to compare with and without your profile.
+          <p className={styles.eqHint} aria-live="polite">
+            EQ is {eqEnabled ? 'active' : 'bypassed'}. Toggle to compare with and without your profile.
           </p>
         </div>
       )}
-    </div>
+    </section>
   );
 }

@@ -61,20 +61,28 @@ export function OscillatorControl() {
     startSweep({ startFreq: 20, endFreq: 20000, duration: sweepDuration });
   }, [isEngineReady, initEngine, engineRef, isSweeping, isPlaying, startSweep, stopSweep, sweepDuration]);
 
-  // During sweep, mirror the sweep frequency in state
   const displayFreq = isSweeping
     ? Math.pow(10, LOG_MIN + progress * (LOG_MAX - LOG_MIN))
     : frequency;
 
+  const freqLabel = `${formatFrequency(displayFreq)} Hz`;
+
   return (
-    <div className={styles.container}>
+    <section className={styles.container} aria-label="Sine oscillator">
       <div className={styles.header}>
         <span className={styles.title}>Oscillator</span>
-        <span className={styles.freqDisplay}>{formatFrequency(displayFreq)} Hz</span>
+        <span
+          className={styles.freqDisplay}
+          aria-live="polite"
+          aria-atomic="true"
+          aria-label={`Current frequency: ${freqLabel}`}
+        >
+          {freqLabel}
+        </span>
       </div>
 
       <div className={styles.sliderWrap}>
-        <span className={styles.rangeLabel}>20 Hz</span>
+        <span className={styles.rangeLabel} aria-hidden="true">20 Hz</span>
         <input
           type="range"
           className={styles.slider}
@@ -84,12 +92,24 @@ export function OscillatorControl() {
           value={isSweeping ? freqToSlider(displayFreq) : freqToSlider(frequency)}
           onChange={handleSliderChange}
           disabled={isSweeping}
+          aria-label="Oscillator frequency"
+          aria-valuemin={20}
+          aria-valuemax={20000}
+          aria-valuenow={Math.round(displayFreq)}
+          aria-valuetext={freqLabel}
         />
-        <span className={styles.rangeLabel}>20k Hz</span>
+        <span className={styles.rangeLabel} aria-hidden="true">20k Hz</span>
       </div>
 
       {isSweeping && (
-        <div className={styles.progressWrap}>
+        <div
+          className={styles.progressWrap}
+          role="progressbar"
+          aria-label="Sweep progress"
+          aria-valuenow={Math.round(progress * 100)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
           <div className={styles.progressBar} style={{ width: `${progress * 100}%` }} />
         </div>
       )}
@@ -98,18 +118,22 @@ export function OscillatorControl() {
         <button
           className={`${styles.playBtn} ${isPlaying ? styles.active : ''}`}
           onClick={handlePlayStop}
+          aria-label={isPlaying ? 'Stop oscillator' : 'Play oscillator'}
+          aria-pressed={isPlaying}
         >
           {isPlaying ? 'Stop' : 'Play'}
         </button>
 
         <div className={styles.sweepSection}>
-          <div className={styles.durationPicker}>
+          <div className={styles.durationPicker} role="group" aria-label="Sweep duration">
             {SWEEP_DURATIONS.map((d) => (
               <button
                 key={d}
                 className={`${styles.durationBtn} ${sweepDuration === d ? styles.durationActive : ''}`}
                 onClick={() => setSweepDuration(d)}
                 disabled={isSweeping}
+                aria-label={`Set sweep duration to ${d} seconds`}
+                aria-pressed={sweepDuration === d}
               >
                 {d}s
               </button>
@@ -118,11 +142,13 @@ export function OscillatorControl() {
           <button
             className={`${styles.sweepBtn} ${isSweeping ? styles.active : ''}`}
             onClick={handleSweep}
+            aria-label={isSweeping ? 'Stop frequency sweep' : `Start auto sweep (${sweepDuration} seconds)`}
+            aria-pressed={isSweeping}
           >
             {isSweeping ? 'Stop Sweep' : 'Auto Sweep'}
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

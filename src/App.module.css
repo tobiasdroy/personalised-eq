@@ -4,6 +4,26 @@
   flex-direction: column;
 }
 
+/* Skip navigation link — visible only on keyboard focus (WCAG 2.4.1) */
+.skipLink {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  padding: 10px 18px;
+  border-radius: 0 0 8px 0;
+  text-decoration: none;
+  z-index: 9999;
+}
+
+.skipLink:focus {
+  top: 0;
+}
+
 .header {
   display: flex;
   align-items: center;

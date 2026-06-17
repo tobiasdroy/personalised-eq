@@ -1,0 +1,45 @@
+.btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: #c2000a;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(194, 0, 10, 0.5);
+  transition: opacity 0.1s, transform 0.1s;
+  user-select: none;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.icon {
+  font-size: 10px;
+  line-height: 1;
+}
+
+[data-theme='dark'] .btn {
+  background: #ff3b30;
+  box-shadow: 0 4px 16px rgba(255, 59, 48, 0.45);
+}
