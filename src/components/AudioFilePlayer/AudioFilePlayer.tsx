@@ -6,7 +6,6 @@ export function AudioFilePlayer() {
   const { engineRef, initEngine, isEngineReady } = useAppContext();
   const [fileName, setFileName] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [eqEnabled, setEQEnabled] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -53,26 +52,10 @@ export function AudioFilePlayer() {
     }
   }, [isEngineReady, initEngine, engineRef, isPlaying]);
 
-  const handleEQToggle = useCallback(() => {
-    const next = !eqEnabled;
-    setEQEnabled(next);
-    engineRef.current?.setFileEQEnabled(next);
-  }, [eqEnabled, engineRef]);
-
   return (
     <section className={styles.container} aria-label="Audio file player">
       <div className={styles.header}>
         <span className={styles.title}>Audio File</span>
-        {fileName && (
-          <button
-            className={`${styles.eqToggle} ${eqEnabled ? styles.eqOn : styles.eqOff}`}
-            onClick={handleEQToggle}
-            aria-label={`EQ profile ${eqEnabled ? 'active — click to bypass' : 'bypassed — click to enable'}`}
-            aria-pressed={eqEnabled}
-          >
-            EQ {eqEnabled ? 'On' : 'Bypassed'}
-          </button>
-        )}
       </div>
 
       <div
@@ -112,9 +95,6 @@ export function AudioFilePlayer() {
           >
             {isPlaying ? 'Stop' : 'Play'}
           </button>
-          <p className={styles.eqHint} aria-live="polite">
-            EQ is {eqEnabled ? 'active' : 'bypassed'}. Toggle to compare with and without your profile.
-          </p>
         </div>
       )}
     </section>

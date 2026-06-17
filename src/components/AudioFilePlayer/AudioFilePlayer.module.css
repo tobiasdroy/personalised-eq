@@ -20,28 +20,6 @@
   letter-spacing: 0.06em;
 }
 
-.eqToggle {
-  font-family: var(--font);
-  font-size: 13px;
-  font-weight: var(--font-weight-medium);
-  padding: 5px 14px;
-  border-radius: 20px;
-  cursor: pointer;
-  border: 1.5px solid;
-  transition: all 0.15s;
-}
-
-.eqOn {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: rgba(10, 132, 255, 0.12);
-}
-
-.eqOff {
-  border-color: var(--border);
-  color: var(--text-secondary);
-  background: transparent;
-}
 
 .dropZone {
   border: 1.5px dashed var(--border);
@@ -117,8 +95,3 @@
   color: var(--accent);
 }
 
-.eqHint {
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin: 0;
-}
