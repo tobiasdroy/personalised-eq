@@ -63,10 +63,10 @@
   font-weight: var(--font-weight-medium);
 }
 
-.playControls {
+.transport {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   margin-top: 14px;
 }
 
@@ -75,13 +75,14 @@
   font-size: 14px;
   font-weight: var(--font-weight-medium);
   border-radius: 8px;
-  padding: 8px 20px;
+  padding: 8px 18px;
   cursor: pointer;
   border: 1.5px solid var(--border);
   background: var(--bg-elevated);
   color: var(--text-primary);
   transition: all 0.15s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .playBtn:hover {
@@ -93,5 +94,59 @@
   background: rgba(10, 132, 255, 0.15);
   border-color: var(--accent);
   color: var(--accent);
+}
+
+.scrubberWrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.scrubber {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--bg-primary);
+  box-shadow: 0 0 0 1px var(--accent);
+  transition: transform 0.1s;
+}
+
+.scrubber::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.scrubber::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--bg-primary);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.time {
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
 }
 

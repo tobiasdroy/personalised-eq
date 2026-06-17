@@ -19,6 +19,10 @@ export class AudioEngine {
   private currentOscillator: OscillatorNode | null = null;
   private currentFileSource: AudioBufferSourceNode | null = null;
   private audioBuffer: AudioBuffer | null = null;
+  private playbackOffset = 0;
+  private playbackStartTime = 0;
+  private fileIsPlaying = false;
+  private onFileEnded: (() => void) | null = null;
   private fileEQEnabled = true;
   private eqBypassed = false;
   private preampLinear = 1.0;
@@ -202,25 +206,52 @@ export class AudioEngine {
 
   async loadFile(buffer: ArrayBuffer): Promise<void> {
     if (!this.ctx) return;
+    this.stopFile();
     this.audioBuffer = await this.ctx.decodeAudioData(buffer);
   }
 
-  async startFile(): Promise<void> {
+  async startFile(offset = 0, onEnded?: () => void): Promise<void> {
     if (!this.ctx || !this.fileGainNode || !this.audioBuffer) return;
     await this.resumeContext();
     this.masterGainNode?.gain.setValueAtTime(this.preampLinear, this.ctx.currentTime);
-    this.stopFile();
+
+    // Stop existing source without resetting position state
+    if (this.currentFileSource) {
+      try { this.currentFileSource.stop(); } catch { /* already stopped */ }
+      this.currentFileSource.disconnect();
+      this.currentFileSource = null;
+    }
+
+    if (onEnded !== undefined) this.onFileEnded = onEnded;
+    this.playbackOffset = Math.max(0, offset);
+    this.playbackStartTime = this.ctx.currentTime;
+    this.fileIsPlaying = true;
 
     const source = this.ctx.createBufferSource();
     source.buffer = this.audioBuffer;
     source.connect(this.fileGainNode);
-    source.start();
+    source.start(0, this.playbackOffset);
     source.onended = () => {
       if (this.currentFileSource === source) {
         this.currentFileSource = null;
+        this.fileIsPlaying = false;
+        this.playbackOffset = 0;
+        this.onFileEnded?.();
       }
     };
     this.currentFileSource = source;
+  }
+
+  pauseFile(): void {
+    if (this.fileIsPlaying) {
+      this.playbackOffset = this.getFilePosition();
+    }
+    if (this.currentFileSource) {
+      try { this.currentFileSource.stop(); } catch { /* already stopped */ }
+      this.currentFileSource.disconnect();
+      this.currentFileSource = null;
+    }
+    this.fileIsPlaying = false;
   }
 
   stopFile(): void {
@@ -229,6 +260,36 @@ export class AudioEngine {
       this.currentFileSource.disconnect();
       this.currentFileSource = null;
     }
+    this.fileIsPlaying = false;
+    this.playbackOffset = 0;
+    this.onFileEnded = null;
+  }
+
+  async seekFile(position: number): Promise<void> {
+    const wasPlaying = this.fileIsPlaying;
+    if (this.currentFileSource) {
+      try { this.currentFileSource.stop(); } catch { /* already stopped */ }
+      this.currentFileSource.disconnect();
+      this.currentFileSource = null;
+    }
+    this.fileIsPlaying = false;
+    this.playbackOffset = Math.max(0, Math.min(position, this.audioBuffer?.duration ?? 0));
+    if (wasPlaying) {
+      await this.startFile(this.playbackOffset, this.onFileEnded ?? undefined);
+    }
+  }
+
+  getFilePosition(): number {
+    if (!this.ctx || !this.fileIsPlaying) return this.playbackOffset;
+    return this.playbackOffset + (this.ctx.currentTime - this.playbackStartTime);
+  }
+
+  getFileDuration(): number {
+    return this.audioBuffer?.duration ?? 0;
+  }
+
+  getIsFilePlaying(): boolean {
+    return this.fileIsPlaying;
   }
 
   setFileEQEnabled(enabled: boolean): void {
