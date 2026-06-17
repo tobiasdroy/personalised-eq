@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  gap: 8px;
+}
+
+.fileInput {
+  display: none;
+}
+
+.btn {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  padding: 7px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}

@@ -1,0 +1,83 @@
+.container {
+  width: 100%;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 280px;
+}
+
+/* Grid */
+.grid line {
+  stroke: var(--eq-grid);
+  stroke-width: 1;
+}
+
+.zeroLine {
+  stroke: var(--eq-zero-line) !important;
+  stroke-width: 1.5 !important;
+}
+
+.grid text {
+  fill: var(--text-secondary);
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
+  pointer-events: none;
+}
+
+.dbLabel {
+  fill: var(--text-secondary);
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
+  pointer-events: none;
+}
+
+/* Per-band curves */
+.bandCurve {
+  fill: none;
+  stroke: var(--eq-curve);
+  stroke-width: 1;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+/* Combined curve */
+.curveGlow {
+  fill: none;
+  stroke: var(--eq-curve);
+  stroke-width: 6;
+  opacity: 0.15;
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+.curve {
+  fill: none;
+  stroke: var(--eq-curve);
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+/* Handles */
+.handleHit {
+  fill: transparent;
+  cursor: grab;
+}
+
+.handleHit:active {
+  cursor: grabbing;
+}
+
+.handle {
+  fill: var(--eq-curve);
+  stroke: var(--bg-primary);
+  stroke-width: 2;
+  pointer-events: none;
+}
