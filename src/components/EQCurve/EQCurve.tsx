@@ -139,9 +139,11 @@ export function EQCurve() {
                   y2={y}
                   className={db === 0 ? styles.zeroLine : undefined}
                 />
-                <text x={4} y={y - 3} className={styles.dbLabel}>
-                  {db > 0 ? `+${db}` : db}dB
-                </text>
+                {Math.abs(db) < 18 && (
+                  <text x={4} y={y - 3} className={styles.dbLabel}>
+                    {db > 0 ? `+${db}` : db}dB
+                  </text>
+                )}
               </g>
             );
           })}
