@@ -2,16 +2,23 @@
 
 A web-based tool for creating a personalised equaliser profile based on your HRTF (Head-Related Transfer Function). Sweep a sine oscillator across the audible frequency range, identify where your hearing peaks and dips, and correct them with a parametric EQ until the response sounds flat to you. Verify the result by toggling your profile on and off against an audio file.
 
-All processing is done client-side via the Web Audio API — no server, no latency.
+All processing is done client-side via the Web Audio API — no server, no data leaves your browser.
 
 ## Features
 
 - **Sine oscillator** — sweep 20 Hz to 20 kHz manually or via auto-sweep (10 / 30 / 60 s)
 - **Parametric EQ** — 5 bands by default, expandable to 10; peak, low shelf, and high shelf filter types per band
 - **Live EQ curve** — SVG frequency response computed in real time; drag handles to adjust frequency and gain directly on the curve
+- **A/B bypass** — toggle the entire EQ in and out with one button to compare your correction against the flat signal
+- **Reset** — zero all band gains in one step (with confirmation)
 - **Audio file player** — upload any audio file and toggle your EQ profile on/off to compare
 - **Import / Export** — standard APO Equalizer `.txt` format, compatible with most system-level EQ tools
+- **Light and dark mode** — system-agnostic toggle, preference saved across sessions
 - **Wizard** *(coming soon)* — a guided step-by-step flow for beginners
+
+## Safety
+
+A safety notice is shown on first use with instructions to lower your volume before starting. Hardware limiting (−1 dBFS ceiling + brick-wall compressor) and a panic button are built in as additional safeguards.
 
 ## Tech stack
 
@@ -31,16 +38,18 @@ Open [http://localhost:5173](http://localhost:5173).
 
 ## Usage
 
-1. Click **Play** to start the sine oscillator
-2. Drag the frequency slider or use **Auto Sweep** to move through the spectrum
-3. Where you hear a peak (louder than expected), add a negative gain correction on that band. Where you hear a trough, add positive gain.
-4. Adjust until the oscillator sounds perceptually flat across the range
-5. Upload an audio file and toggle **EQ On / Bypassed** to hear the difference
-6. **Export Profile** to save your settings as a `.txt` file
+1. Accept the safety notice and lower your listening volume before starting
+2. Click **Play** to start the sine oscillator
+3. Drag the frequency slider or use **Auto Sweep** to move through the spectrum
+4. Where you hear a peak (louder than expected), add a negative gain correction on that band. Where you hear a trough, add positive gain.
+5. Adjust until the oscillator sounds perceptually flat across the range
+6. Use **A/B** to toggle the EQ in and out and confirm the correction is working
+7. Upload an audio file and toggle **EQ On / Bypassed** on the file player to hear the difference on real material
+8. **Export Profile** to save your settings as a `.txt` file
 
 ## APO format
 
-Profiles are saved in the EqualizerAPO text format:
+Profiles are saved in the EqualizerAPO text format, compatible with tools like EqualizerAPO (Windows) and others:
 
 ```
 Preamp: -3.0 dB
