@@ -1,9 +1,64 @@
+import { useState, useEffect, useRef } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import type { EQBand, FilterType } from '../../types';
 import styles from './EQBandControl.module.css';
 
 const FILTER_LABELS: Record<FilterType, string> = { PK: 'Peak', LSC: 'Low Shelf', HSC: 'High Shelf' };
 const FILTER_TYPES: FilterType[] = ['PK', 'LSC', 'HSC'];
+
+// Holds local string state while the user is typing so intermediate values
+// (empty field, partial numbers, leading minus) don't snap back. Commits and
+// clamps on blur; syncs from external prop changes only when not focused.
+function NumberInput({
+  value,
+  min,
+  max,
+  step,
+  onChange,
+  className,
+  'aria-label': ariaLabel,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  onChange: (v: number) => void;
+  className?: string;
+  'aria-label': string;
+}) {
+  const [local, setLocal] = useState(String(value));
+  const focused = useRef(false);
+
+  useEffect(() => {
+    if (!focused.current) setLocal(String(value));
+  }, [value]);
+
+  return (
+    <input
+      type="number"
+      className={className}
+      value={local}
+      min={min}
+      max={max}
+      step={step}
+      aria-label={ariaLabel}
+      onFocus={() => { focused.current = true; }}
+      onChange={(e) => {
+        const raw = e.target.value;
+        setLocal(raw);
+        const v = parseFloat(raw);
+        if (!isNaN(v) && v >= min && v <= max) onChange(v);
+      }}
+      onBlur={() => {
+        focused.current = false;
+        const v = parseFloat(local);
+        const clamped = isNaN(v) ? value : Math.max(min, Math.min(max, v));
+        setLocal(String(clamped));
+        onChange(clamped);
+      }}
+    />
+  );
+}
 
 function BandRow({ band, index, showRemove }: { band: EQBand; index: number; showRemove: boolean }) {
   const { updateBand, removeBand } = useAppContext();
@@ -36,54 +91,42 @@ function BandRow({ band, index, showRemove }: { band: EQBand; index: number; sho
 
       <label className={styles.paramLabel}>
         <span className={styles.paramName}>Freq</span>
-        <input
-          type="number"
-          className={styles.paramInput}
+        <NumberInput
           value={band.frequency}
           min={20}
           max={20000}
           step={1}
+          className={styles.paramInput}
           aria-label={`Band ${n} frequency in Hz`}
-          onChange={(e) => {
-            const v = parseFloat(e.target.value);
-            if (!isNaN(v)) updateBand(band.id, { frequency: Math.max(20, Math.min(20000, v)) });
-          }}
+          onChange={(v) => updateBand(band.id, { frequency: v })}
         />
         <span className={styles.paramUnit} aria-hidden="true">Hz</span>
       </label>
 
       <label className={styles.paramLabel}>
         <span className={styles.paramName}>Gain</span>
-        <input
-          type="number"
-          className={styles.paramInput}
+        <NumberInput
           value={band.gain}
           min={-24}
           max={24}
           step={0.1}
+          className={styles.paramInput}
           aria-label={`Band ${n} gain in decibels`}
-          onChange={(e) => {
-            const v = parseFloat(e.target.value);
-            if (!isNaN(v)) updateBand(band.id, { gain: Math.max(-24, Math.min(24, v)) });
-          }}
+          onChange={(v) => updateBand(band.id, { gain: v })}
         />
         <span className={styles.paramUnit} aria-hidden="true">dB</span>
       </label>
 
       <label className={styles.paramLabel}>
         <span className={styles.paramName}>Q</span>
-        <input
-          type="number"
-          className={styles.paramInput}
+        <NumberInput
           value={band.q}
           min={0.1}
           max={10}
           step={0.01}
+          className={styles.paramInput}
           aria-label={`Band ${n} Q factor (bandwidth)`}
-          onChange={(e) => {
-            const v = parseFloat(e.target.value);
-            if (!isNaN(v)) updateBand(band.id, { q: Math.max(0.1, Math.min(10, v)) });
-          }}
+          onChange={(v) => updateBand(band.id, { q: v })}
         />
       </label>
 
