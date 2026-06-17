@@ -146,7 +146,7 @@ function BandRow({ band, index, showRemove }: { band: EQBand; index: number; sho
 }
 
 export function EQBandControl() {
-  const { bands, addBand, resetGains, eqBypassed, setEQBypassed } = useAppContext();
+  const { bands, addBand, resetGains, eqBypassed, setEQBypassed, preampGain, setPreampGain } = useAppContext();
   const [resetPending, setResetPending] = useState(false);
 
   const handleResetConfirm = useCallback(() => {
@@ -196,6 +196,22 @@ export function EQBandControl() {
           </button>
         </div>
       </div>
+      <div className={styles.preampRow}>
+        <label className={styles.preampLabel}>
+          <span className={styles.preampName}>Preamp</span>
+          <NumberInput
+            value={preampGain}
+            min={-20}
+            max={6}
+            step={0.5}
+            className={styles.preampInput}
+            aria-label="Preamp gain in decibels"
+            onChange={(v) => setPreampGain(v)}
+          />
+          <span className={styles.preampUnit}>dB</span>
+        </label>
+      </div>
+
       <div className={styles.bands} role="list" aria-labelledby="eq-bands-heading">
         {bands.map((band, i) => (
           <div key={band.id} role="listitem">

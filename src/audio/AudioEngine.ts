@@ -20,6 +20,7 @@ export class AudioEngine {
   private audioBuffer: AudioBuffer | null = null;
   private fileEQEnabled = true;
   private eqBypassed = false;
+  private preampLinear = 1.0;
   private sweepTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   init(): void {
@@ -131,7 +132,7 @@ export class AudioEngine {
     if (!this.ctx || !this.oscGainNode) return;
     await this.resumeContext();
     // Restore master gain in case panic() was previously called
-    this.masterGainNode?.gain.setValueAtTime(1, this.ctx.currentTime);
+    this.masterGainNode?.gain.setValueAtTime(this.preampLinear, this.ctx.currentTime);
     this.stopOscillator();
 
     const osc = this.ctx.createOscillator();
@@ -195,7 +196,7 @@ export class AudioEngine {
   async startFile(): Promise<void> {
     if (!this.ctx || !this.fileGainNode || !this.audioBuffer) return;
     await this.resumeContext();
-    this.masterGainNode?.gain.setValueAtTime(1, this.ctx.currentTime);
+    this.masterGainNode?.gain.setValueAtTime(this.preampLinear, this.ctx.currentTime);
     this.stopFile();
 
     const source = this.ctx.createBufferSource();
@@ -284,6 +285,7 @@ export class AudioEngine {
   // ── Master ───────────────────────────────────────────────────────────────────
 
   setMasterGain(gain: number): void {
+    this.preampLinear = gain;
     if (!this.ctx || !this.masterGainNode) return;
     this.masterGainNode.gain.setValueAtTime(gain, this.ctx.currentTime);
   }
