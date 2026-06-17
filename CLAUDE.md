@@ -171,6 +171,8 @@ AudioBufferSourceNode            │
 
 **Sync pattern:** event handler calls `engine.setBandXxx(index, value)` AND `dispatch(UPDATE_BAND)` together. The reducer is pure — no side effects inside it.
 
+`preampGain` (dB, −20 to +6) is stored in the reducer and converted to linear before calling `engine.setMasterGain()`. `AudioEngine` stores `preampLinear` internally so that `startOscillator()`/`startFile()` restore to the correct level after a `panic()` call — they must restore `this.preampLinear`, not a hardcoded `1`.
+
 ---
 
 ## EQ curve
@@ -191,6 +193,10 @@ AudioBufferSourceNode            │
 `NumberInput` is a local wrapper around `<input type="number">` that holds string state while the field is focused to prevent snap-back on intermediate values (empty field, partial numbers, leading minus). It commits and clamps on blur, and only syncs from the external `value` prop when not focused.
 
 Bands: min 1, max 10. Add/remove buttons. Enable toggle per band (button labelled with band number, `aria-pressed`).
+
+### Preamp row
+
+A single `Preamp [input] dB` row sits between the header and the band list. Range −20 to +6 dB, step 0.5. Uses the same `NumberInput` component as band parameters. Maps to `setPreampGain` in context → `engine.setMasterGain(Math.pow(10, gain/20))`. Saved to and loaded from APO profiles.
 
 ### Header action buttons (right side of EQ Bands header)
 
@@ -255,6 +261,7 @@ Local-only processing. No data leaves the browser. One-line notice in the footer
 - When `setBandEnabled(false)` is called, gain is set to 0. `setBandEnabled(true, restoreGain)` must receive the band's actual gain value to restore it — `useEQBands.updateBand` passes this automatically.
 - `frequencyMath.ts` uses shared module-level `MAG_BUF` / `PHASE_BUF` buffers. These are not thread-safe, but Web Audio runs on the main thread so this is fine.
 - Frequency label text anchors: `"start"` for 20 Hz, `"end"` for 20 kHz, `"middle"` for all others — prevents labels clipping outside the SVG.
+- `startOscillator()`/`startFile()` must restore `masterGainNode` to `this.preampLinear`, not hardcoded `1.0`, otherwise a panic followed by replay silently overrides the user's preamp setting.
 
 ---
 

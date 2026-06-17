@@ -7,7 +7,7 @@ All processing is done client-side via the Web Audio API — no server, no data 
 ## Features
 
 - **Sine oscillator** — sweep 20 Hz to 20 kHz manually or via auto-sweep (10 / 30 / 60 s)
-- **Parametric EQ** — 5 bands by default, expandable to 10; peak, low shelf, and high shelf filter types per band
+- **Parametric EQ** — 5 bands by default, expandable to 10; peak, low shelf, and high shelf filter types per band; preamp gain control (−20 to +6 dB) for overall level before boosting
 - **Live EQ curve** — SVG frequency response computed in real time; drag handles to adjust frequency and gain directly on the curve
 - **A/B bypass** — toggle the entire EQ in and out with one button to compare your correction against the flat signal
 - **Reset** — zero all band gains in one step (with confirmation)
@@ -43,9 +43,10 @@ Open [http://localhost:5173](http://localhost:5173).
 3. Drag the frequency slider or use **Auto Sweep** to move through the spectrum
 4. Where you hear a peak (louder than expected), add a negative gain correction on that band. Where you hear a trough, add positive gain.
 5. Adjust until the oscillator sounds perceptually flat across the range
-6. Use **A/B** to toggle the EQ in and out and confirm the correction is working
-7. Upload an audio file and toggle **EQ On / Bypassed** on the file player to hear the difference on real material
-8. **Export Profile** to save your settings as a `.txt` file
+6. Set **Preamp** to a negative value (e.g. −3 dB) if your corrections involve significant boosts — this prevents clipping and gives you a fairer A/B comparison
+7. Use **A/B** to toggle the EQ in and out and confirm the correction is working
+8. Upload an audio file and toggle **EQ On / Bypassed** on the file player to hear the difference on real material
+9. **Export Profile** to save your settings as a `.txt` file
 
 ## APO format
 
