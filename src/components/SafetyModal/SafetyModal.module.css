@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
@@ -14,105 +14,84 @@
 .modal {
   background: var(--bg-primary);
   border-radius: 16px;
-  max-width: 600px;
+  max-width: 480px;
   width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-}
-
-.warningBadge {
-  font-size: 36px;
-  text-align: center;
-  padding-top: 32px;
-  line-height: 1;
 }
 
 .heading {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: var(--font-weight-medium);
   color: var(--text-primary);
-  text-align: center;
-  padding: 12px 32px 0;
   letter-spacing: -0.3px;
+  padding: 28px 28px 0;
 }
 
 .body {
-  padding: 24px 32px;
+  padding: 16px 28px 20px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  overflow-y: auto;
+  gap: 14px;
 }
 
-.body p {
+.intro {
   font-size: 14px;
   line-height: 1.6;
   color: var(--text-primary);
-  margin-top: 8px;
 }
 
-.body p + p {
-  margin-top: 10px;
+.actionCard {
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  padding: 14px 16px;
 }
 
-.sectionHeading {
-  font-size: 12px;
-  font-weight: var(--font-weight-medium);
+.actionTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.actionText {
+  font-size: 13px;
+  line-height: 1.55;
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 6px;
 }
 
-.actionSection {
-  background: var(--bg-secondary);
-  border-radius: 10px;
-  padding: 16px;
-}
-
-.disclaimerSection {
-  background: var(--bg-secondary);
-  border-radius: 10px;
-  padding: 16px;
-}
-
-.disclaimerSection ul {
-  margin-top: 8px;
-  padding-left: 20px;
+.points {
+  padding-left: 18px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
-.disclaimerSection li {
-  font-size: 14px;
+.points li {
+  font-size: 13px;
   line-height: 1.5;
-  color: var(--text-primary);
+  color: var(--text-secondary);
 }
 
 .footer {
-  padding: 20px 32px 28px;
+  padding: 16px 28px 24px;
   border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .checkLabel {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   cursor: pointer;
   font-size: 13px;
-  line-height: 1.5;
   color: var(--text-primary);
 }
 
 .checkLabel input[type='checkbox'] {
-  margin-top: 2px;
   width: 16px;
   height: 16px;
   flex-shrink: 0;
@@ -128,14 +107,14 @@
   color: #fff;
   border: none;
   border-radius: 10px;
-  padding: 12px;
+  padding: 11px;
   cursor: pointer;
   transition: opacity 0.15s;
   width: 100%;
 }
 
 .acceptBtn:disabled {
-  opacity: 0.35;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 

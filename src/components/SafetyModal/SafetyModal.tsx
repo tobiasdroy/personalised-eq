@@ -13,7 +13,6 @@ export function SafetyModal({ onAccept, onClose, mode = 'gate' }: Props) {
   const modalRef = useRef<HTMLDivElement>(null);
   const headingId = 'safety-modal-heading';
 
-  // Focus trap: keep keyboard focus inside the modal while it is open
   useEffect(() => {
     const modal = modalRef.current;
     if (!modal) return;
@@ -41,69 +40,29 @@ export function SafetyModal({ onAccept, onClose, mode = 'gate' }: Props) {
   return (
     <div className={styles.overlay} aria-modal="true" role="dialog" aria-labelledby={headingId}>
       <div className={styles.modal} ref={modalRef}>
-        <div className={styles.warningBadge} aria-hidden="true">⚠</div>
-
-        <h1 id={headingId} className={styles.heading}>Safety notice</h1>
+        <h1 id={headingId} className={styles.heading}>Before you start</h1>
 
         <div className={styles.body}>
-          <section>
-            <h2 className={styles.sectionHeading}>Risk of hearing damage</h2>
-            <p>
-              This tool generates pure sine tones and sweeps across the full audible spectrum
-              (20 Hz – 20,000 Hz). Pure tones can sound dramatically louder or quieter at certain
-              frequencies than wideband audio, due to the uneven frequency sensitivity of human
-              hearing (the equal-loudness contours). A frequency that appears quiet at one point
-              in a sweep may cause a sudden, intense perceived loudness peak moments later.
-            </p>
-            <p>
-              Exposure to loud tones — even briefly — can cause permanent hearing damage,
-              including <strong>tinnitus</strong> (ringing in the ears) and noise-induced hearing
-              loss (NIHL). These conditions are irreversible.
-            </p>
-          </section>
+          <p className={styles.intro}>
+            This tool plays pure sine tones across the full frequency range. Because of how
+            human hearing works, some frequencies can sound much louder than others — so it's
+            worth taking a moment to set up carefully.
+          </p>
 
-          <section className={styles.actionSection}>
-            <h2 className={styles.sectionHeading}>Before you start — required action</h2>
-            <p>
-              <strong>Lower your hardware volume to the minimum</strong> before clicking Accept.
-              Begin with your volume at its lowest setting and raise it very gradually once the
-              tool is running. Never use this tool at high volume levels or for extended periods.
+          <div className={styles.actionCard}>
+            <p className={styles.actionTitle}>Turn your volume down first</p>
+            <p className={styles.actionText}>
+              Start with your hardware volume at its lowest setting, then raise it slowly once
+              you're in the app. Stop immediately if you feel any discomfort or ringing.
             </p>
-            <p>
-              If you experience any discomfort, pain, or ringing, stop immediately and seek
-              medical advice.
-            </p>
-          </section>
+          </div>
 
-          <section className={styles.disclaimerSection}>
-            <h2 className={styles.sectionHeading}>Disclaimer of liability</h2>
-            <p>
-              This tool is provided for personal and educational use only. By proceeding, you
-              acknowledge and agree that:
-            </p>
-            <ul>
-              <li>
-                Use of this tool is entirely <strong>at your own risk</strong>.
-              </li>
-              <li>
-                The developer accepts <strong>no liability</strong> for any hearing damage,
-                tinnitus, auditory injury, or hardware damage arising from use of this tool.
-              </li>
-              <li>
-                You are solely responsible for setting safe volume levels on your hardware
-                before and during use.
-              </li>
-              <li>
-                This tool does not constitute medical or audiological advice. Consult a qualified
-                audiologist for professional hearing assessment.
-              </li>
-              <li>
-                This tool is <strong>not intended for use by anyone under the age of 18.</strong>{' '}
-                If you are under 18, a parent or guardian must read and accept these terms on
-                your behalf before you use this tool, and must supervise your use at all times.
-              </li>
-            </ul>
-          </section>
+          <ul className={styles.points}>
+            <li>This tool is for personal use only — you use it at your own risk</li>
+            <li>The developer is not liable for hearing damage or hardware damage</li>
+            <li>It's not a substitute for professional audiological advice</li>
+            <li>This tool is intended for adults (18+)</li>
+          </ul>
         </div>
 
         <div className={styles.footer}>
@@ -118,12 +77,9 @@ export function SafetyModal({ onAccept, onClose, mode = 'gate' }: Props) {
                   type="checkbox"
                   checked={checked}
                   onChange={(e) => setChecked(e.target.checked)}
-                  aria-label="I have read all warnings and agree to use this tool at my own risk"
+                  aria-label="I understand and want to continue"
                 />
-                <span>
-                  I have read and understood the warnings above and agree to use this tool
-                  entirely at my own risk
-                </span>
+                <span>I understand and want to continue</span>
               </label>
               <button
                 className={styles.acceptBtn}
@@ -131,7 +87,7 @@ export function SafetyModal({ onAccept, onClose, mode = 'gate' }: Props) {
                 disabled={!checked}
                 aria-disabled={!checked}
               >
-                Accept and continue
+                Get started
               </button>
             </>
           )}
