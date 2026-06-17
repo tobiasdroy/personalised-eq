@@ -1,6 +1,5 @@
 .container {
   background: var(--bg-secondary);
-  border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: var(--shadow);
   padding: 20px;
@@ -57,7 +56,6 @@
   padding: 10px 12px;
   background: var(--bg-elevated);
   border-radius: 8px;
-  border: 1px solid var(--border);
   transition: opacity 0.2s;
 }
 
