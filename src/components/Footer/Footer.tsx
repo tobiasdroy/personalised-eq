@@ -49,16 +49,6 @@ function PrivacyModal({ onClose }: { onClose: () => void }) {
           </section>
 
           <section>
-            <h3 className={styles.privacySectionHeading}>Terms of service</h3>
-            <p>
-              This tool is provided as-is for personal and educational use. Use is subject to
-              the safety disclaimer accepted on first load. The developer accepts no liability
-              for hearing or hardware damage arising from use.{' '}
-              <a href="#" className={styles.link}>Full terms of service</a> — placeholder.
-            </p>
-          </section>
-
-          <section>
             <h3 className={styles.privacySectionHeading}>Contact</h3>
             <p>
               Questions or accessibility concerns?{' '}
