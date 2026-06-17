@@ -94,6 +94,11 @@ export function SafetyModal({ onAccept }: Props) {
                 This tool does not constitute medical or audiological advice. Consult a qualified
                 audiologist for professional hearing assessment.
               </li>
+              <li>
+                This tool is <strong>not intended for use by anyone under the age of 18.</strong>{' '}
+                If you are under 18, a parent or guardian must read and accept these terms on
+                your behalf before you use this tool, and must supervise your use at all times.
+              </li>
             </ul>
           </section>
         </div>
