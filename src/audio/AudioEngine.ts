@@ -243,26 +243,26 @@ export class AudioEngine {
 
   setBandFrequency(index: number, freq: number): void {
     const node = this.filterNodes[index];
-    if (!this.ctx || !node) return;
-    node.frequency.setValueAtTime(freq, this.ctx.currentTime);
+    if (!node) return;
+    node.frequency.value = freq;
   }
 
   setBandGain(index: number, gain: number): void {
     const node = this.filterNodes[index];
-    if (!this.ctx || !node) return;
-    node.gain.setValueAtTime(gain, this.ctx.currentTime);
+    if (!node) return;
+    node.gain.value = gain;
   }
 
   setBandQ(index: number, q: number): void {
     const node = this.filterNodes[index];
-    if (!this.ctx || !node) return;
-    node.Q.setValueAtTime(q, this.ctx.currentTime);
+    if (!node) return;
+    node.Q.value = q;
   }
 
   setBandEnabled(index: number, enabled: boolean, restoreGain = 0): void {
     const node = this.filterNodes[index];
-    if (!this.ctx || !node) return;
-    node.gain.setValueAtTime(enabled ? restoreGain : 0, this.ctx.currentTime);
+    if (!node) return;
+    node.gain.value = enabled ? restoreGain : 0;
   }
 
   getFilterNodes(): BiquadFilterNode[] {

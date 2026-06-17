@@ -21,7 +21,7 @@ interface DragState {
 }
 
 export function EQCurve() {
-  const { bands, updateBand, engineRef } = useAppContext();
+  const { bands, updateBand, engineRef, isEngineReady } = useAppContext();
   const svgRef = useRef<SVGSVGElement>(null);
   const [width, setWidth] = useState(800);
   const [combinedPath, setCombinedPath] = useState('');
@@ -48,7 +48,7 @@ export function EQCurve() {
     }
     setCombinedPath(buildCombinedPath(filterNodes, width, SVG_HEIGHT));
     setBandPaths(filterNodes.map((n) => buildBandPath(n, width, SVG_HEIGHT)));
-  }, [bands, width, engineRef]);
+  }, [bands, width, engineRef, isEngineReady]);
 
   // Pointer drag
   const onPointerDown = useCallback((e: React.PointerEvent<SVGCircleElement>, band: EQBand) => {
