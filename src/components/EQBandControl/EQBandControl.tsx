@@ -149,7 +149,7 @@ function BandRow({ band, index, showRemove }: { band: EQBand; index: number; sho
 export function EQBandControl() {
   const { bands, addBand, resetGains, eqBypassed, setEQBypassed, preampGain, setPreampGain, engineRef, isEngineReady } = useAppContext();
   const [resetPending, setResetPending] = useState(false);
-  const [levelMatch, setLevelMatch] = useState(false);
+  const [levelMatch, setLevelMatch] = useState(true);
 
   const handleResetConfirm = useCallback(() => {
     resetGains();
@@ -202,7 +202,7 @@ export function EQBandControl() {
             aria-pressed={levelMatch}
             aria-label={levelMatch ? 'Level match on — EQ path compensated for equal loudness' : 'Level match off — click to compensate EQ gain for equal A/B loudness'}
           >
-            Level
+            Level Match
           </button>
           <button
             className={`${styles.abBtn} ${eqBypassed ? styles.abActive : ''}`}
