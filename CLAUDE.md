@@ -94,8 +94,27 @@ src/
 │   └── index.ts
 ├── styles/
 │   └── globals.css         # Tokens + global resets + focus styles
-└── App.tsx                 # Router, AppProvider, SafetyModal gate
+└── App.tsx                 # Router, AppProvider, SafetyModal gate; also houses Header, IntroCard, InstructionsModal (all small, no separate file)
 ```
+
+---
+
+## App-level UI (App.tsx)
+
+### Header
+
+Sticky, blurred, `z-index: 100`. Contains:
+- **Logo** — "Uniqualiser" (32 px, links to `/`)
+- **Nav** — "How to use" button (opens `InstructionsModal`) + "Wizard" link (router link to `/wizard`)
+- **Header right** — Dark/Light theme toggle + `ProfileManager` (import/export)
+
+### InstructionsModal
+
+Opened from the "How to use" nav button. Focus-trapped; Escape closes it. Four numbered steps (accent-coloured pill + bold heading + body text) explaining the profiling workflow. "Got it" button in the footer. Lives in `App.tsx` alongside the header — no separate file.
+
+### IntroCard
+
+First card in `MainLayout` (above `OscillatorControl`). Two-column layout on desktop (single column ≤760 px). Explains why AutoEQ alone is insufficient (HRTF variation) and the recommended workflow (AutoEQ for sub-1 kHz, Uniqualiser for above). Includes a link to The Headphone Show YouTube video. Uses the same card styling as all other cards (hover lift, `card-bg`, `border-radius: 20px`).
 
 ---
 
