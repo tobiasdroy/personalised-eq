@@ -57,7 +57,7 @@ Font: `'Helvetica Neue', Helvetica, Arial, sans-serif`, weight 500 everywhere.
 --shadow: 0 2px 8px rgba(0,0,0,0.3), 0 12px 40px rgba(0,0,0,0.25);
 ```
 
-**Cards** — `border-radius: 20px`; `transition: transform + box-shadow 0.22s`; hover lifts `translateY(-3px)` with a deeper shadow. Card section titles are `15px` uppercase, `--text-primary` (not secondary).
+**Cards** — `border-radius: 20px`; `transition: transform + box-shadow 0.22s`; hover lifts `translateY(-3px)` with a deeper shadow. Card section titles are `24px` title case, `--text-primary` (not secondary), no `text-transform` or `letter-spacing`.
 
 The page background has a subtle radial blue accent at the top (`radial-gradient` on `html/body background-image`).
 
@@ -109,7 +109,7 @@ export interface EQBand {
   enabled: boolean;
   type: FilterType;
   frequency: number;   // Hz, 20–20000
-  gain: number;        // dB, -24 to +24
+  gain: number;        // dB, -18 to +18  (matches ±18 dB EQ curve range)
   q: number;           // 0.1 to 10
 }
 
@@ -223,6 +223,12 @@ The oscillator sits full-width at the top of the page. Key details:
 
 `NumberInput` is a local wrapper around `<input type="number">` that holds string state while the field is focused to prevent snap-back on intermediate values (empty field, partial numbers, leading minus). It commits and clamps on blur, and only syncs from the external `value` prop when not focused.
 
+Each band parameter (Freq, Gain, Q) has a `Knob` SVG component to the left of the label+input. The knob is a 32×32 SVG with a 270° arc (7:30 to 4:30 clock positions). Drag up = increase, drag down = decrease; 200 px of travel = full range. Freq and Q use `logScale=true`. Rounding is done with `parseFloat(raw.toFixed(dp))` where `dp = Math.round(-Math.log10(step))` — this avoids floating-point noise (e.g. `1.3000000000000003`). Arrow keys on a focused knob adjust by one step (Shift = ×10).
+
+Filter type buttons display human-readable labels — **Peak** (PK), **Lo Shelf** (LSC), **Hi Shelf** (HSC) — while the underlying `FilterType` value in state remains the APO code. Q is hidden for Lo Shelf and Hi Shelf (an empty `<div>` placeholder preserves the grid column so Gain stays in the same position across all band types). The row grid is always 6 columns: `32px auto 1fr 1fr 1fr 28px`.
+
+Gain range is **±18 dB** (matching the EQ curve's visible ±18 dB axis). This limit is enforced in `EQBandControl`, `EQCurve` drag/keyboard handlers, and ARIA attributes.
+
 Bands: min 1, max 10. Add/remove buttons. Enable toggle per band (button labelled with band number, `aria-pressed`).
 
 ### Preamp row
@@ -271,9 +277,9 @@ The modal has a focus trap. Content is friendly and concise (~80 words): intro, 
 - `compressorNode`: brick-wall at −1 dBFS, ratio 20:1, knee 0, attack 1 ms.
 - `PanicButton`: fixed bottom-right, red, silences all audio instantly. Spacebar shortcut (guarded against form elements).
 
-### Privacy
+### Privacy Policy
 
-Local-only processing. No data leaves the browser. One-line notice in the footer. Privacy modal documents this (UK GDPR / DUAA compliance).
+Local-only processing. No data leaves the browser. One-line notice in the footer. The **Privacy Policy** modal (opened via footer link) documents compliance with UK GDPR / DUAA, EU GDPR (Article 6 & 9), US state health privacy laws (Washington MHMDA), COPPA, and the EU AI Act. The modal heading and footer button are both labelled "Privacy Policy".
 
 ### Accessibility (WCAG 2.2 AA)
 
