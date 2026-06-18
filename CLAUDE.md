@@ -1,4 +1,4 @@
-# PersonalisedEQ — Project Context for Claude
+# Uniqualiser — Project Context for Claude
 
 ## What this is
 

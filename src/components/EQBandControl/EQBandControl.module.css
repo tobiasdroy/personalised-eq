@@ -121,27 +121,29 @@
 }
 
 .abBtn {
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border: 1.5px solid var(--accent);
+  border-radius: 20px;
+  color: var(--accent);
   font-family: var(--font);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: var(--font-weight-medium);
-  padding: 5px 12px;
+  padding: 7px 20px;
   cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.04em;
+  transition: all 0.18s;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
 .abBtn:hover {
-  color: var(--text-primary);
+  background: var(--accent);
+  color: #fff;
 }
 
 .abBtn.abActive {
-  background: var(--bg-elevated);
+  background: var(--accent);
   border-color: var(--accent);
-  color: var(--accent);
+  color: #fff;
 }
 
 .levelBtn {
@@ -163,8 +165,8 @@
 
 .levelBtn.levelActive {
   background: var(--bg-elevated);
-  border-color: #30d158;
-  color: #30d158;
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .preampRow {
@@ -376,11 +378,17 @@
   width: 24px;
 }
 
-.hint {
+.bottomBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 12px;
+  gap: 12px;
+}
+
+.hint {
   font-size: 11px;
   color: var(--text-secondary);
-  text-align: center;
 }
 
 /* ── Radix Tooltip ────────────────────────────────────────────────── */

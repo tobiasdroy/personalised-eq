@@ -374,18 +374,7 @@ export function EQBandControl() {
               aria-pressed={eqBypassed}
               aria-label={eqBypassed ? 'A/B: EQ bypassed — click to restore' : 'A/B: EQ active — click to bypass'}
             >
-              A/B
-            </button>
-          </Tip>
-          <Tip label={bands.length >= 10 ? 'Maximum 10 bands' : 'Add a new EQ band'}>
-            <button
-              className={styles.addBtn}
-              onClick={addBand}
-              disabled={bands.length >= 10}
-              aria-label={`Add EQ band (${bands.length} of 10 in use)`}
-            >
-              <Plus size={12} strokeWidth={2.5} />
-              Add Band
+              {eqBypassed ? 'Bypass' : 'A/B Compare'}
             </button>
           </Tip>
         </div>
@@ -425,9 +414,22 @@ export function EQBandControl() {
         </AnimatePresence>
       </div>
 
-      <p className={styles.hint} aria-live="polite">
-        {bands.length}/10 bands · Drag handles on the curve, or use arrow keys when a handle is focused
-      </p>
+      <div className={styles.bottomBar}>
+        <p className={styles.hint} aria-live="polite">
+          {bands.length}/10 bands · Drag handles on the curve, or use arrow keys when a handle is focused
+        </p>
+        <Tip label={bands.length >= 10 ? 'Maximum 10 bands' : 'Add a new EQ band'}>
+          <button
+            className={styles.addBtn}
+            onClick={addBand}
+            disabled={bands.length >= 10}
+            aria-label={`Add EQ band (${bands.length} of 10 in use)`}
+          >
+            <Plus size={12} strokeWidth={2.5} />
+            Add Band
+          </button>
+        </Tip>
+      </div>
     </section>
   );
 }

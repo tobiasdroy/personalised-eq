@@ -23,7 +23,7 @@ function Header({ onToggleTheme, theme }: { onToggleTheme: () => void; theme: st
 
   return (
     <header className={styles.header}>
-      <Link to="/" className={styles.logo}>PersonalisedEQ</Link>
+      <Link to="/" className={styles.logo}>Uniqualiser</Link>
       <nav className={styles.nav} aria-label="Main navigation">
         <Link to="/wizard" className={`${styles.navLink} ${isWizard ? styles.navActive : ''}`}>
           Wizard

@@ -32,10 +32,10 @@
   --text-primary: rgba(255, 255, 255, 0.92);
   /* Raised from 0.45 → 0.55 to achieve ≥4.5:1 contrast on #2c2b2a (WCAG AA) */
   --text-secondary: rgba(255, 255, 255, 0.55);
-  /* #f87171 achieves ≥4.5:1 contrast on all dark surfaces (WCAG AA) */
-  --accent: #f87171;
-  --eq-curve: #f87171;
-  --eq-band-fill: rgba(248, 113, 113, 0.15);
+  /* #ff6060 achieves ≥4.5:1 contrast on page/card surfaces (WCAG AA) */
+  --accent: #ff6060;
+  --eq-curve: #ff6060;
+  --eq-band-fill: rgba(255, 96, 96, 0.15);
   --eq-grid: rgba(255, 255, 255, 0.06);
   --eq-zero-line: rgba(255, 255, 255, 0.18);
   --shadow:
