@@ -92,14 +92,14 @@
   background: var(--accent);
   border-radius: 50%;
   border: 2px solid var(--bg-primary);
-  box-shadow: 0 0 0 1px var(--accent), 0 2px 8px rgba(0, 98, 204, 0.35);
+  box-shadow: 0 0 0 1px var(--accent), 0 2px 8px rgba(185, 28, 28, 0.35);
   cursor: grab;
   transition: box-shadow 0.15s, transform 0.1s;
   outline: none;
 }
 
 .sliderThumb:hover {
-  box-shadow: 0 0 0 2px var(--accent), 0 2px 14px rgba(0, 98, 204, 0.55);
+  box-shadow: 0 0 0 2px var(--accent), 0 2px 14px rgba(185, 28, 28, 0.55);
   transform: scale(1.1);
 }
 
@@ -202,7 +202,7 @@
 
 .playBtn.active,
 .sweepBtn.active {
-  background: rgba(10, 132, 255, 0.15);
+  background: rgba(185, 28, 28, 0.15);
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -235,7 +235,7 @@
 .durationBtn.durationActive {
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(10, 132, 255, 0.1);
+  background: rgba(185, 28, 28, 0.1);
 }
 
 .durationBtn:disabled {

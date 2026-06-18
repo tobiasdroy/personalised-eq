@@ -39,12 +39,12 @@
 
 .dropZone:hover {
   border-color: var(--accent);
-  background: rgba(10, 132, 255, 0.05);
+  background: rgba(185, 28, 28, 0.05);
 }
 
 .dropZone.dragging {
   border-color: var(--accent);
-  background: rgba(10, 132, 255, 0.1);
+  background: rgba(185, 28, 28, 0.1);
 }
 
 .dropZone.hasFile {
@@ -110,7 +110,7 @@
 }
 
 .playBtn.active {
-  background: rgba(10, 132, 255, 0.15);
+  background: rgba(185, 28, 28, 0.15);
   border-color: var(--accent);
   color: var(--accent);
 }

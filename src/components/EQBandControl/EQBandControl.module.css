@@ -50,7 +50,7 @@
 }
 
 .addBtn:hover:not(:disabled) {
-  background: rgba(10, 132, 255, 0.1);
+  background: rgba(185, 28, 28, 0.1);
 }
 
 .addBtn:disabled {
@@ -258,7 +258,7 @@
 .enableToggle.enabled {
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(10, 132, 255, 0.12);
+  background: rgba(185, 28, 28, 0.12);
 }
 
 .typeSelect {
