@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { motion } from 'framer-motion';
 import { Sun, Moon } from 'lucide-react';
@@ -94,8 +94,6 @@ function InstructionsModal({ onClose }: { onClose: () => void }) {
 }
 
 function Header({ onToggleTheme, theme }: { onToggleTheme: () => void; theme: string }) {
-  const location = useLocation();
-  const isWizard = location.pathname === '/wizard';
   const [showInstructions, setShowInstructions] = useState(false);
 
   return (
@@ -110,9 +108,6 @@ function Header({ onToggleTheme, theme }: { onToggleTheme: () => void; theme: st
           >
             How to use
           </button>
-          <Link to="/wizard" className={`${styles.navLink} ${isWizard ? styles.navActive : ''}`}>
-            Wizard
-          </Link>
         </nav>
         <div className={styles.headerRight}>
           <button
@@ -194,12 +189,9 @@ function MainLayout() {
 
 export default function App() {
   const { theme, toggleTheme } = useTheme();
-  const [safetyAccepted, setSafetyAccepted] = useState(
-    () => localStorage.getItem('eq-safety-accepted') === 'true',
-  );
+  const [safetyAccepted, setSafetyAccepted] = useState(false);
 
   function handleAccept() {
-    localStorage.setItem('eq-safety-accepted', 'true');
     setSafetyAccepted(true);
   }
 

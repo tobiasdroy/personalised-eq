@@ -120,7 +120,7 @@ export function AudioFilePlayer() {
   return (
     <section className={styles.container} aria-label="Audio file player">
       <div className={styles.header}>
-        <span className={styles.title}>Audio File</span>
+        <span className={styles.title}>Upload an Audio File</span>
       </div>
 
       <div

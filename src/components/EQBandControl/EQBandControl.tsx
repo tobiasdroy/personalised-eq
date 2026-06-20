@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RotateCcw, Plus } from 'lucide-react';
+import { RotateCcw, Plus, X } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
 import { computeAverageGainDb } from '../../audio/frequencyMath';
 import type { EQBand, FilterType } from '../../types';
@@ -179,7 +179,7 @@ function NumberInput({
 // ── BandRow ───────────────────────────────────────────────────────────────────
 
 function BandRow({ band, index, showRemove }: { band: EQBand; index: number; showRemove: boolean }) {
-  const { updateBand, removeBand, hoveredBandIndex } = useAppContext();
+  const { updateBand, removeBand, hoveredBandIndex, setHoveredBandIndex } = useAppContext();
   const n = index + 1;
   const showQ = band.type === 'PK';
   const isHighlighted = hoveredBandIndex === index;
@@ -189,6 +189,8 @@ function BandRow({ band, index, showRemove }: { band: EQBand; index: number; sho
       className={`${styles.row} ${!band.enabled ? styles.disabled : ''} ${isHighlighted ? styles.highlighted : ''}`}
       role="group"
       aria-label={`EQ band ${n}`}
+      onMouseEnter={() => setHoveredBandIndex(index)}
+      onMouseLeave={() => setHoveredBandIndex(null)}
     >
       <button
         className={`${styles.enableToggle} ${band.enabled ? styles.enabled : ''}`}
@@ -296,7 +298,7 @@ function BandRow({ band, index, showRemove }: { band: EQBand; index: number; sho
           onClick={() => removeBand(band.id)}
           aria-label={`Remove band ${n}`}
         >
-          ×
+          <X size={12} strokeWidth={2.5} />
         </button>
       ) : (
         <div className={styles.removePlaceholder} aria-hidden="true" />
@@ -332,7 +334,7 @@ export function EQBandControl() {
   }, [bands, levelMatch, isEngineReady, engineRef]);
 
   return (
-    <section className={styles.container} aria-label="Parametric EQ bands">
+    <section className={`${styles.container} ${eqBypassed ? styles.bypassed : ''}`} aria-label="Parametric EQ bands">
       <div className={styles.header}>
         <span className={styles.title} id="eq-bands-heading">EQ Bands</span>
         <div className={styles.headerActions}>

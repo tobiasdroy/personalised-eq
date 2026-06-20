@@ -55,7 +55,15 @@ export function OscillatorControl() {
   );
 
   const handlePlayStop = useCallback(async () => {
-    if (!isEngineReady) await initEngine();
+    // Safari requires AudioContext.resume() to be both called and awaited within
+    // the gesture handler, before any other async work. initEngine() handles both
+    // creation and resume for first use; the else branch resumes an existing context
+    // that may be suspended or interrupted (e.g. on iOS when focus returns).
+    if (!isEngineReady) {
+      await initEngine();
+    } else {
+      await engineRef.current!.resumeContext();
+    }
     const engine = engineRef.current!;
     if (isPlaying) {
       if (isSweeping) stopSweep();
@@ -68,7 +76,11 @@ export function OscillatorControl() {
   }, [isEngineReady, initEngine, engineRef, isPlaying, isSweeping, stopSweep, frequency]);
 
   const handleSweep = useCallback(async () => {
-    if (!isEngineReady) await initEngine();
+    if (!isEngineReady) {
+      await initEngine();
+    } else {
+      await engineRef.current!.resumeContext();
+    }
     const engine = engineRef.current!;
     if (isSweeping) {
       stopSweep();

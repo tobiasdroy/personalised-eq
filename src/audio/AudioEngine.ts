@@ -76,7 +76,7 @@ export class AudioEngine {
   }
 
   async resumeContext(): Promise<void> {
-    if (this.ctx?.state === 'suspended') {
+    if (this.ctx && this.ctx.state !== 'running') {
       await this.ctx.resume();
     }
   }

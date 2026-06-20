@@ -119,6 +119,13 @@ export function Footer() {
           All audio processing happens locally on your device. No data is uploaded or shared.
         </p>
         <div className={styles.links}>
+          <a
+            href="mailto:tobias.droy@gmail.com?subject=Uniqualiser%20feedback"
+            className={styles.footerLink}
+            aria-label="Send feedback by email"
+          >
+            Feedback
+          </a>
           <button className={styles.footerLink} onClick={() => setShowSafety(true)}>
             Safety Notice
           </button>
